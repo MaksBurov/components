@@ -1,4 +1,4 @@
-class Modal {
+export default class Modal {
     constructor() {
         this.modalBlock //активное модальное окно
         this.activeBtn //активная кнопка вызова окна (кнопка по которой было вызвано модальное окно)
@@ -72,6 +72,3 @@ class Modal {
         })
     }
 }
-
-
-const modal = new Modal()
