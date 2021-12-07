@@ -26,22 +26,223 @@ html(lang="en")
                     li Сохранение положения фокуса до и после переключения модального режима
                     li Фокусировка на модальном окне
 
-                h2.subtitle Пример использования
-                code &lt;div&gt; test &lt;/div&gt;
+                h2.subtitle Инструкция использования
 
-                button(
-                    type="button"
-                    aria-controls="myDialog"
-                    data-open-modal
-                ) open-modal
+                h3 Разметка HTML 
+                    p 
+                        button(
+                            type="button"
+                            aria-controls="modalTemplate"
+                            data-open-modal
+                        ) Пример
+                        | контента модельного окна 
+                    p 
+                        button(
+                            type="button"
+                            aria-controls="modalCallBtn"
+                            data-open-modal
+                        ) Пример
+                        | кнопки вызова
+
+                h3 Стили
+                    p
+                        button(
+                            type="button"
+                            aria-controls="modalStyles"
+                            data-open-modal
+                        ) Стандартные стили
+
+                h3 Скрипты
+                    p
+                        button(
+                            type="button"
+                            aria-controls="modalJS"
+                            data-open-modal
+                        ) Код JavaScript
+                    p Инициализация
+                    p 
+                        code const modal = new Modal()
+
+               
 
 
         +modal(
-            'myDialog',
-            'Заголовок',
-            'Описание'
+            'modalTemplate',
+            'Разметка',
+            'Шаблон разметки'
         )
-            div test
+            pre
+                |&lt;div
+                |    id="myDialog"
+                |    class="modal"
+                |    role="dialog"
+                |    aria-modal="true"
+                |    aria-labelledby="myDialogTitle"
+                |    aria-describedby="myDialogDescription"
+                |&gt;
+                |    &lt;div class="modal__wrapper" tabindex="-1"&gt;
+                |        &lt;h2 id="myDialogTitle" class="modal__title"&gt;title&lt;/h2&gt;
+                |        &lt;button class="modal__close" type="button" aria-label="Close" data-close-modal&gt;close&lt;/button&gt;
+                |        &lt;p id="myDialogDescription" class="modal__description"&gt;Description&lt;/p&gt;
+                |    &lt;/div&gt;
+                |&lt;/div&gt;
+
+        +modal(
+            'modalCallBtn',
+            'Кнопка вызова',
+            'Пример вызова модального окна'
+        )
+            pre
+                |&lt;button
+                |    type="button"
+                |    aria-controls="myDialog"
+                |    data-open-modal
+                |&gt;Открыть модальное окно
+                |&lt;/button&gt;
+
+
+        +modal(
+            'modalStyles',
+            'Стили',
+            'Стандартные стили'
+        )
+            pre 
+                |.modal {<br>
+                |    position: fixed;<br>
+                |    top: 0;<br>
+                |    left: 0;<br>
+                |    z-index: var(--z-index-modal);<br>
+
+                |    width: 0;<br>
+                |    height: 0;<br>
+                |    overflow: hidden;<br>
+
+                |   transition: background-color .15s;<br>
+
+                |    &amp;--active {<br>
+                |        display: flex;<br>
+                |        justify-content: center;<br>
+                |        align-items: center;<br>
+                    
+                |        width: 100vw;<br>
+                |        height: 100vh;<br>
+                    
+                |        background-color: rgba(0, 0, 0, 0.3);<br>
+                |    }<br>
+                |}<br>
+                |.modal--active {<br>
+                |    display: flex;<br>
+                |    justify-content: center;<br>
+                |    align-items: center;<br>
+
+                |    width: 100vw;<br>
+                |    height: 100vh;<br>
+
+                |    background-color: rgba(0, 0, 0, 0.3);<br>
+                |}<br>
+
+                |.modal__wrapper {<br>
+                |    position: relative;<br>
+
+                |    max-width: 570px;<br>
+                |    width: 100%;<br>
+                |    max-height: calc(100vh - 96px);<br>
+                |    overflow-y: auto;<br>
+                |    padding: 25px;<br>
+                |    margin: 0 auto;<br>
+                |    transform: scale(1.5);<br>
+
+                |    background-color: rgb(129, 129, 129);<br>
+                |    opacity: 0;<br>
+
+                |    transition: transform .15s .1s, opacity .1s .1s;
+
+                |}<br>
+                |.modal--active .modal__wrapper {<br>
+                |    transform: scale(1);<br>
+                |    opacity: 1;<br>
+                |}<br>
+
+        +modal(
+            'modalJS',
+            'Скрипт',
+            'Код JavaScript'
+        )
+            pre 
+                |class Modal {
+                |    constructor() {
+                |        this.modalBlock
+                |        this.activeBtn
+                |        this.linksModal
+
+                |        this.onChange = this.keyClick.bind(this)
+
+                |        this.init()
+                |    }
+                |    showModal(modalName) {
+                |        this.modalBlock = document.getElementById(modalName)
+                |        const modalWrapper = this.modalBlock.querySelector('.modal__wrapper')
+                |        this.linksModal = modalWrapper.querySelectorAll('a[href]:not([disabled]), input:not([disabled]), textarea:not([disabled]), button:not([disabled])')
+
+                |        this.modalBlock.classList.add('modal--active')
+                |        modalWrapper.focus()
+
+                |        document.body.style.cssText = `
+                |            width: ${document.body.clientWidth}px;
+                |            overflow: hidden;`
+
+                |        document.addEventListener('keydown', this.onChange)
+                |    }
+                |    hideModal() {
+                |        this.modalBlock.classList.remove('modal--active')
+                |        this.modalBlock = null
+
+                |        document.body.style.cssText = ''
+
+                |        if ( this.activeBtn ) {
+                |            this.activeBtn.focus()
+                |            this.activeBtn = null
+                |        }
+
+                |        document.removeEventListener('keydown', this.onChange)
+                |    }
+                |    keyClick(e) {
+                |        console.log('click')
+                |        if (this.modalBlock &amp;&amp; e.code === `Escape`) this.hideModal()
+
+                |        if ( e.shiftKey &amp;&amp; e.key === 'Tab') this.prevElementFocus(e)
+                |        else if (e.key === 'Tab') this.nextElementFocus(e)
+                |    }
+                |    nextElementFocus(e) {
+                |        if ( document.activeElement === this.linksModal[this.linksModal.length - 1] ) {
+                |            e.preventDefault()
+
+                |            this.linksModal[0].focus()
+                |        }
+                |    }
+                |    prevElementFocus(e) {
+                |        if ( document.activeElement === this.linksModal[0] ) {
+                |            e.preventDefault()
+
+                |            this.linksModal[this.linksModal.length - 1].focus()
+                |        }
+                |    }
+
+                |    init() {
+                |        document.addEventListener('click', ({target}) => {
+                |            const   btnCallModal = target.closest('[data-open-modal]'),
+                |                    btnCloseModal = target.closest('[data-close-modal]')
+
+                |            if ( btnCallModal ) {
+                |                this.activeBtn = btnCallModal
+                |                this.showModal(btnCallModal.getAttribute('aria-controls'))
+                |            }
+                |            if ( this.modalBlock &amp;&amp; ( btnCloseModal || target.matches('.modal--active') )) {
+                |                this.hideModal()
+                |            }
+                |        })
+                |    }
+                |}
 
         script(src="../public/scripts/index.min.js") 
            
