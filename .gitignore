@@ -3,3 +3,4 @@
 .github
 .env
 /node_modules
+/dist
