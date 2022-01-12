@@ -1,4 +1,4 @@
-mixin modal(modalId, title, description, content)
+mixin modal(modalId, title, description)
     section(
         id=modalId
         class="modal"
@@ -9,7 +9,7 @@ mixin modal(modalId, title, description, content)
     )
         div(tabindex="-1").modal__wrapper
             h5(id=modalId+"Title").modal__title= title
-            button(type="button" aria-label="Закрыть модальное окно" data-close-modal) close
+            button(class="modal__btn-close" type="button" aria-label="Закрыть модальное окно" data-close-modal) close
             if description
                 p(id=modalId+"Description").modal__description= description
             div.modal__content

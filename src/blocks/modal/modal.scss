@@ -33,7 +33,7 @@
     margin: 0 auto;
     transform: scale(1.5);
 
-    background-color: rgb(129, 129, 129);
+    background-color: rgb(255, 255, 255);
     opacity: 0;
 
     transition: transform .15s .1s, opacity .1s .1s;
@@ -42,4 +42,10 @@
         transform: scale(1);
         opacity: 1;
     }
+}
+
+.modal__btn-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
 }
