@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Component modal</title><link rel="stylesheet" href="../public/styles/modal.min.css"></head><body> <header class="header"> <div class="header__container container"> <a class="header__logo">Components</a></div></header><main class="container"><article class="content"><h1 class="title">Модальное окно</h1><p>Окно которое блокирует работу пользователя с родительским приложением до тех пор, пока пользователь это окно не закроет.</p><button type="button" aria-controls="modalTemplate" data-open-modal>Пример</button><h2 class="subtitle">Описание работы модального окна</h2><ul> <li>Закрытие модального окна при щелчке на оверлее</li><li>Закрытие модального окна при нажатии кнопки 'Esc'</li><li>Захват фокуса вкладки в модальном окне</li><li>Сохранение положения фокуса до и после переключения модального режима</li><li>Фокусировка на модальном окне</li></ul><h2 class="subtitle">Инструкция использования</h2><h3>Разметка HTML </h3><details> <summary>Пример контента модельного окна </summary><pre>&lt;div
+   id="myDialog"
+   class="modal"
+   role="dialog"
+   aria-modal="true"
+   aria-labelledby="myDialogTitle"
+   aria-describedby="myDialogDescription"
+&gt;
+   &lt;div class="modal__wrapper" tabindex="-1"&gt;
+       &lt;h2 id="myDialogTitle" class="modal__title"&gt;title&lt;/h2&gt;
+       &lt;button class="modal__close" type="button" aria-label="Close" data-close-modal&gt;close&lt;/button&gt;
+       &lt;p id="myDialogDescription" class="modal__description"&gt;Description&lt;/p&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</pre></details><details> <summary>Пример кнопки вызова</summary><pre>&lt;button
+   type="button"
+   aria-controls="myDialog"
+   data-open-modal
+&gt;Открыть модальное окно
+&lt;/button&gt;</pre></details><h3>Стили</h3><details> <summary>Стандартные стили</summary><pre> .modal {
+   position: fixed;
+   top: 0;
+   left: 0;
+   z-index: var(--z-index-modal);
+   width: 0;
+   height: 0;
+   overflow: hidden;
+   transition: background-color .15s;<br>
+}<br>
+.modal--active {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 100vw;
+   height: 100vh;
+   background-color: rgba(0, 0, 0, 0.3);
+}<br>
+.modal__wrapper {
+   position: relative;
+   max-width: 570px;
+   width: 100%;
+   max-height: calc(100vh - 96px);
+   overflow-y: auto;
+   padding: 25px;
+   margin: 0 auto;
+   transform: scale(1.5);
+   background-color: rgb(129, 129, 129);
+   opacity: 0;
+   transition: transform .15s .1s, opacity .1s .1s;
+}<br>
+.modal--active .modal__wrapper {
+   transform: scale(1);
+   opacity: 1;
+}</pre></details><h3>Скрипты</h3><details> <summary>Код JavaScript</summary><pre> class Modal {
+   constructor() {
+       this.modalBlock
+       this.activeBtn
+       this.linksModal
+       this.onChange = this.keyClick.bind(this)
+       this.init()
+   }
+   showModal(modalName) {
+       this.modalBlock = document.getElementById(modalName)
+       const modalWrapper = this.modalBlock.querySelector('.modal__wrapper')
+       this.linksModal = modalWrapper.querySelectorAll('a[href]:not([disabled]), input:not([disabled]), textarea:not([disabled]), button:not([disabled])')
+       this.modalBlock.classList.add('modal--active')
+       modalWrapper.focus()
+       document.body.style.cssText = `
+           width: ${document.body.clientWidth}px;
+           overflow: hidden;`
+       document.addEventListener('keydown', this.onChange)
+   }
+   hideModal() {
+       this.modalBlock.classList.remove('modal--active')
+       this.modalBlock = null
+       document.body.style.cssText = ''
+       if ( this.activeBtn ) {
+           this.activeBtn.focus()
+           this.activeBtn = null
+       }
+       document.removeEventListener('keydown', this.onChange)
+   }
+   keyClick(e) {
+       console.log('click')
+       if (this.modalBlock &amp;&amp; e.code === `Escape`) this.hideModal()
+       if ( e.shiftKey &amp;&amp; e.key === 'Tab') this.prevElementFocus(e)
+       else if (e.key === 'Tab') this.nextElementFocus(e)
+   }
+   nextElementFocus(e) {
+       if ( document.activeElement === this.linksModal[this.linksModal.length - 1] ) {
+           e.preventDefault()
+           this.linksModal[0].focus()
+       }
+   }
+   prevElementFocus(e) {
+       if ( document.activeElement === this.linksModal[0] ) {
+           e.preventDefault()
+           this.linksModal[this.linksModal.length - 1].focus()
+       }
+   }
+   init() {
+       document.addEventListener('click', ({target}) => {
+           const   btnCallModal = target.closest('[data-open-modal]'),
+                   btnCloseModal = target.closest('[data-close-modal]')
+           if ( btnCallModal ) {
+               this.activeBtn = btnCallModal
+               this.showModal(btnCallModal.getAttribute('aria-controls'))
+           }
+           if ( this.modalBlock &amp;&amp; ( btnCloseModal || target.matches('.modal--active') )) {
+               this.hideModal()
+           }
+       })
+   }
+}</pre></details><br><h2>Инициализация</h2><p> <code>const modal = new Modal()</code></p></article></main><section class="modal" id="modalTemplate" role="dialog" aria-modal="true" aria-labelledby="modalTemplateTitle" aria-describedby="modalTemplateDescription"><div class="modal__wrapper" tabindex="-1"><h5 class="modal__title" id="modalTemplateTitle">Заголовок</h5><button class="modal__btn-close" type="button" aria-label="Закрыть модальное окно" data-close-modal>close</button><p class="modal__description" id="modalTemplateDescription">Описание</p><div class="modal__content"><p>Пример модального окна</p></div></div></section><script src="../public/scripts/index.min.js"> </script></body></html>

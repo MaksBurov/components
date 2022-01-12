@@ -1,0 +1,16 @@
+mixin modal(modalId, title, description)
+    section(
+        id=modalId
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby=modalId+"Title"
+        aria-describedby=modalId+"Description" 
+    )
+        div(tabindex="-1").modal__wrapper
+            h5(id=modalId+"Title").modal__title= title
+            button(class="modal__btn-close" type="button" aria-label="Закрыть модальное окно" data-close-modal) close
+            if description
+                p(id=modalId+"Description").modal__description= description
+            div.modal__content
+                block
