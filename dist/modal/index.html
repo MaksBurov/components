@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Component modal</title><link rel="stylesheet" href="../public/styles/modal.min.css"></head><body> <header class="header"> <div class="header__container container"> <a class="header__logo">Components</a></div></header><main class="container"><article class="content"><h1 class="title">Модальное окно</h1><p>Окно которое блокирует работу пользователя с родительским приложением до тех пор, пока пользователь это окно не закроет.</p><h2 class="subtitle">Описание работы модального окна</h2><ul> <li>Закрытие модального окна при щелчке на оверлее</li><li>Закрытие модального окна при нажатии кнопки 'Esc'</li><li>Захват фокуса вкладки в модальном окне</li><li>Сохранение положения фокуса до и после переключения модального режима</li><li>Фокусировка на модальном окне</li></ul><h2 class="subtitle">Инструкция использования</h2><h3>Разметка HTML <p> <button type="button" aria-controls="modalTemplate" data-open-modal>Пример</button>контента модельного окна </p><p> <button type="button" aria-controls="modalCallBtn" data-open-modal>Пример</button>кнопки вызова</p></h3><h3>Стили<p><button type="button" aria-controls="modalStyles" data-open-modal>Стандартные стили</button></p></h3><h3>Скрипты<p><button type="button" aria-controls="modalJS" data-open-modal>Код JavaScript</button></p><p>Инициализация</p><p> <code>const modal = new Modal()</code></p></h3></article></main><section class="modal" id="modalTemplate" role="dialog" aria-modal="true" aria-labelledby="modalTemplateTitle" aria-describedby="modalTemplateDescription"><div class="modal__wrapper" tabindex="-1"><h5 class="modal__title" id="modalTemplateTitle">Разметка</h5><button type="button" aria-label="Закрыть модальное окно" data-close-modal>close</button><p class="modal__description" id="modalTemplateDescription">Шаблон разметки</p><div class="modal__content"><pre>&lt;div
+   id="myDialog"
+   class="modal"
+   role="dialog"
+   aria-modal="true"
+   aria-labelledby="myDialogTitle"
+   aria-describedby="myDialogDescription"
+&gt;
+   &lt;div class="modal__wrapper" tabindex="-1"&gt;
+       &lt;h2 id="myDialogTitle" class="modal__title"&gt;title&lt;/h2&gt;
+       &lt;button class="modal__close" type="button" aria-label="Close" data-close-modal&gt;close&lt;/button&gt;
+       &lt;p id="myDialogDescription" class="modal__description"&gt;Description&lt;/p&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</pre></div></div></section><section class="modal" id="modalCallBtn" role="dialog" aria-modal="true" aria-labelledby="modalCallBtnTitle" aria-describedby="modalCallBtnDescription"><div class="modal__wrapper" tabindex="-1"><h5 class="modal__title" id="modalCallBtnTitle">Кнопка вызова</h5><button type="button" aria-label="Закрыть модальное окно" data-close-modal>close</button><p class="modal__description" id="modalCallBtnDescription">Пример вызова модального окна</p><div class="modal__content"><pre>&lt;button
+   type="button"
+   aria-controls="myDialog"
+   data-open-modal
+&gt;Открыть модальное окно
+&lt;/button&gt;</pre></div></div></section><section class="modal" id="modalStyles" role="dialog" aria-modal="true" aria-labelledby="modalStylesTitle" aria-describedby="modalStylesDescription"><div class="modal__wrapper" tabindex="-1"><h5 class="modal__title" id="modalStylesTitle">Стили</h5><button type="button" aria-label="Закрыть модальное окно" data-close-modal>close</button><p class="modal__description" id="modalStylesDescription">Стандартные стили</p><div class="modal__content"><pre> .modal {<br>
+   position: fixed;<br>
+   top: 0;<br>
+   left: 0;<br>
+   z-index: var(--z-index-modal);<br>
+   width: 0;<br>
+   height: 0;<br>
+   overflow: hidden;<br>
+  transition: background-color .15s;<br>
+   &amp;--active {<br>
+       display: flex;<br>
+       justify-content: center;<br>
+       align-items: center;<br>
+       width: 100vw;<br>
+       height: 100vh;<br>
+       background-color: rgba(0, 0, 0, 0.3);<br>
+   }<br>
+}<br>
+.modal--active {<br>
+   display: flex;<br>
+   justify-content: center;<br>
+   align-items: center;<br>
+   width: 100vw;<br>
+   height: 100vh;<br>
+   background-color: rgba(0, 0, 0, 0.3);<br>
+}<br>
+.modal__wrapper {<br>
+   position: relative;<br>
+   max-width: 570px;<br>
+   width: 100%;<br>
+   max-height: calc(100vh - 96px);<br>
+   overflow-y: auto;<br>
+   padding: 25px;<br>
+   margin: 0 auto;<br>
+   transform: scale(1.5);<br>
+   background-color: rgb(129, 129, 129);<br>
+   opacity: 0;<br>
+   transition: transform .15s .1s, opacity .1s .1s;
+}<br>
+.modal--active .modal__wrapper {<br>
+   transform: scale(1);<br>
+   opacity: 1;<br>
+}<br></pre></div></div></section><section class="modal" id="modalJS" role="dialog" aria-modal="true" aria-labelledby="modalJSTitle" aria-describedby="modalJSDescription"><div class="modal__wrapper" tabindex="-1"><h5 class="modal__title" id="modalJSTitle">Скрипт</h5><button type="button" aria-label="Закрыть модальное окно" data-close-modal>close</button><p class="modal__description" id="modalJSDescription">Код JavaScript</p><div class="modal__content"><pre> class Modal {
+   constructor() {
+       this.modalBlock
+       this.activeBtn
+       this.linksModal
+       this.onChange = this.keyClick.bind(this)
+       this.init()
+   }
+   showModal(modalName) {
+       this.modalBlock = document.getElementById(modalName)
+       const modalWrapper = this.modalBlock.querySelector('.modal__wrapper')
+       this.linksModal = modalWrapper.querySelectorAll('a[href]:not([disabled]), input:not([disabled]), textarea:not([disabled]), button:not([disabled])')
+       this.modalBlock.classList.add('modal--active')
+       modalWrapper.focus()
+       document.body.style.cssText = `
+           width: ${document.body.clientWidth}px;
+           overflow: hidden;`
+       document.addEventListener('keydown', this.onChange)
+   }
+   hideModal() {
+       this.modalBlock.classList.remove('modal--active')
+       this.modalBlock = null
+       document.body.style.cssText = ''
+       if ( this.activeBtn ) {
+           this.activeBtn.focus()
+           this.activeBtn = null
+       }
+       document.removeEventListener('keydown', this.onChange)
+   }
+   keyClick(e) {
+       console.log('click')
+       if (this.modalBlock &amp;&amp; e.code === `Escape`) this.hideModal()
+       if ( e.shiftKey &amp;&amp; e.key === 'Tab') this.prevElementFocus(e)
+       else if (e.key === 'Tab') this.nextElementFocus(e)
+   }
+   nextElementFocus(e) {
+       if ( document.activeElement === this.linksModal[this.linksModal.length - 1] ) {
+           e.preventDefault()
+           this.linksModal[0].focus()
+       }
+   }
+   prevElementFocus(e) {
+       if ( document.activeElement === this.linksModal[0] ) {
+           e.preventDefault()
+           this.linksModal[this.linksModal.length - 1].focus()
+       }
+   }
+   init() {
+       document.addEventListener('click', ({target}) => {
+           const   btnCallModal = target.closest('[data-open-modal]'),
+                   btnCloseModal = target.closest('[data-close-modal]')
+           if ( btnCallModal ) {
+               this.activeBtn = btnCallModal
+               this.showModal(btnCallModal.getAttribute('aria-controls'))
+           }
+           if ( this.modalBlock &amp;&amp; ( btnCloseModal || target.matches('.modal--active') )) {
+               this.hideModal()
+           }
+       })
+   }
+}</pre></div></div></section><script src="../public/scripts/index.min.js"> </script></body></html>
