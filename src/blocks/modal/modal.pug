@@ -5,7 +5,7 @@ mixin modal(modalId, title, description)
         role="dialog"
         aria-modal="true"
         aria-labelledby=modalId+"Title"
-        aria-describedby=modalId+"Description"
+        aria-describedby=modalId+"Description" 
     )
         div(tabindex="-1").modal__wrapper
             h5(id=modalId+"Title").modal__title= title
