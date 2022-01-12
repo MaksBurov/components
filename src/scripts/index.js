@@ -1,3 +1,1 @@
-import Modal from '../blocks/modal/modal'
-
-const modal = new Modal()
+document.querySelector('h1').textContent = 'Website starter'
